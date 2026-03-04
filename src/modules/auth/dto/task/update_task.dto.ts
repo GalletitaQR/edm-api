@@ -21,4 +21,7 @@ export class UpdateTaskDto {
     @IsOptional()
     @IsBoolean()
     priority?: boolean;
+
+    @IsOptional()
+    userId?: number;
 }
