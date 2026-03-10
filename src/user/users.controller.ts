@@ -1,12 +1,16 @@
 import { UserService } from './users.service';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, ParseIntPipe, Post, Put, HttpCode } from '@nestjs/common';
+import { UtilService } from 'src/common/services/util.service';
 
 
 @ApiTags()
 @Controller('api/user')
 export class UserController {
-    constructor(private readonly userService: UserService) { }
+    constructor(
+        private readonly userService: UserService,
+        private readonly utilService: UtilService
+    ) { }
 
     @Get()
     @ApiOperation({ summary: 'Lista de Usuarios' })
@@ -23,7 +27,14 @@ export class UserController {
 
     @Post()
     public async insertUser(@Body() user: any): Promise<any> {
-        return this.userService.insertUser(user);
+        const userByUsername = await this.userService.getUserByUsername(user.username);
+        if (userByUsername) {
+            throw new HttpException('Username already exists', HttpStatus.BAD_REQUEST);
+        }
+
+        const encryptedPassword = await this.utilService.hashPassword(user.password);
+        user.password = encryptedPassword;
+        return await this.userService.insertUser(user);
     }
 
     @Put(":id")
@@ -39,6 +50,5 @@ export class UserController {
         } catch (error) {
             throw new HttpException('User not found', HttpStatus.NOT_FOUND);
         }
-        return true;
     }
 }

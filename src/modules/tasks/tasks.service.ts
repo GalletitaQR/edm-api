@@ -8,7 +8,7 @@ import { CreateTaskDto } from '../auth/dto/task/create-task.dto';
 import { Client } from 'pg';
 import { Task } from '../auth/entities/task.entity';
 import { UpdateTaskDto } from '../auth/dto/task/update_task.dto';
-import { PrismaService } from '../../prisma.service';
+import { PrismaService } from '../../common/services/prisma.service';
 
 @Injectable()
 export class TaskService {
