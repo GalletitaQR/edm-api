@@ -1,43 +1,62 @@
-import { Controller, Get, HttpStatus, Post, HttpCode, Body } from '@nestjs/common';
+import { Controller, Get, HttpStatus, Post, HttpCode, Body, UnauthorizedException } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { ApiOperation } from '@nestjs/swagger';
 import { AuthDto } from './dto/auth/auth.dto';
-import { JwtService } from '@nestjs/jwt';
+import { UtilService } from 'src/common/services/util.service';
 @Controller('api/auth')
 export class AuthController {
-  constructor(
-    private readonly authSvc: AuthService,
-    private readonly jwtSvc: JwtService
-  ) {}
+  constructor(private readonly authSvc: AuthService,
+    private readonly utilSvc: UtilService
+  ) { }
 
   // POST /register 200
   @Post("login")
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Verifica las credenciales y genera un JWT' })
-  public async logIn(@Body() auth: AuthDto): Promise <string> {
+  public async logIn(@Body() auth: AuthDto): Promise<any> {
     const { username, password } = auth;
-    const jwt = this.jwtSvc.signAsync(auth, { secret: process.env.JWT_SECRET, expiresIn: '60s' });
-    return this.authSvc.logIn();
+
+    const user = await this.authSvc.getUserByUsername(username);
+    if (!user)
+      throw new UnauthorizedException('Credenciales inválidas');
+
+    if (await this.utilSvc.checkPassword(password, user.password!)) {
+
+      //Obtener token de acceso por 60s
+      const { password, ...payload } = user;
+
+      const jwt = await this.utilSvc.generateJwt(payload);
+      //FIXME: Generar refresh token por 7d
+      const refresh = await this.utilSvc.generateJwt(payload, '7d');
+      return { access_token: jwt, refresh_token: refresh };
+
+    } else {
+      throw new UnauthorizedException('Credenciales inválidas');
+    }
   }
 
-  @Get("me")
+
+
+
   @ApiOperation({ summary: 'Extrae el ID del usuario desde el token y busca la información' })
+  @Get("me")
   public async getProfile() {
-    // return this.authSvc.getProfile();
+
   }
+
 
   @Post("refresh")
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Genera un nuevo JWT usando el refresh token' })
+  @ApiOperation({ summary: 'Recibe un "Refresh Token", valida que no haya expirado y entrega un nuevo  "Access Token "' })
   public async refreshToken() {
-    // return this.authSvc.refreshToken();
+
   }
 
   @Post("logout")
   @HttpCode(HttpStatus.NO_CONTENT)
-  @ApiOperation({ summary: 'Invalida el refresh token para cerrar sesión' })
-  public async logOut() {
-    // return this.authSvc.logOut();
-  }
-}
+  @ApiOperation({ summary: 'Invalida los tokens en el lado del servidor y limpia las cookies' })
+  public async logout() {
 
+  }
+
+}
