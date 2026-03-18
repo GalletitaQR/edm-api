@@ -22,8 +22,12 @@ export class TaskService {
 
   private tasks: Task[] = [];
 
-  public async getTasks(): Promise<Task[]> {
-    const tasks = await this.prisma.task.findMany();
+  public async getTasks(userId: number): Promise<Task[]> {
+    const tasks = await this.prisma.task.findMany({
+      where: {
+        userId: userId
+      }
+    });
     return tasks;
   }
 

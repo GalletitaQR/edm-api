@@ -1,7 +1,7 @@
 /* eslint-disable no-var */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable prettier/prettier */
-import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, ParseIntPipe, Post, Put, HttpCode } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, ParseIntPipe, Post, Put, HttpCode, Req } from '@nestjs/common';
 import { TaskService } from './tasks.service';
 import { CreateTaskDto } from '../auth/dto/task/create-task.dto';
 import { UpdateTaskDto } from '../auth/dto/task/update_task.dto';
@@ -14,8 +14,12 @@ export class TaskController {
 
   @Get()
   @ApiOperation({ summary: 'Lista de Tareas Disponibles' })
-  public async fetchTasks(): Promise<any[]> {
-    return this.taskSvc.getTasks();
+  public async fetchTasks(@Req() request: any): Promise<any[]> {
+    const userId = request['user']?.id; // Obtener el ID del usuario autenticado
+    if (!userId) {
+      throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
+    }
+    return this.taskSvc.getTasks(userId);
   }
 
   /** !GET http:localhost:3000/api/task/1 */

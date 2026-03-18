@@ -10,6 +10,7 @@ import {
   ParseIntPipe,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CreateUserDto } from '../modules/auth/dto/user/create_user.dto';
@@ -17,8 +18,11 @@ import { UpdateUserDto } from '../modules/auth/dto/user/update_user.dto';
 import { User } from '../modules/auth/entities/user.entity';
 import { UserService } from '../user/users.service';
 import { UtilService } from 'src/common/services/util.service';
+import { AuthGuard } from 'src/common/guards/auth.guard';
+import { Req } from '@nestjs/common';
 
 @ApiTags('Users')
+@UseGuards(AuthGuard)
 @Controller('api/user')
 export class UserController {
   constructor(private readonly userSvc: UserService,
@@ -27,8 +31,9 @@ export class UserController {
   /** GET http://localhost:3000/api/user */
   @Get()
   @ApiOperation({ summary: '| Lista los usuarios disponibles' })
-  public async fetchUsers(): Promise<User[]> {
-    return await this.userSvc.getUsers();
+  public async fetchUsers(@Req() request: any): Promise<any[]> {
+    var { id } = request['user'];
+    return await this.userSvc.getUsers(id);
   }
 
   /** GET http://localhost:3000/api/user/1 */
