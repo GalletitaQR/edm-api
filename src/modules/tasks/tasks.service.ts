@@ -20,44 +20,49 @@ export class TaskService {
 
   }
 
-  private tasks: Task[] = [];
+  private tasks: any[] = [];
 
-  public async getTasks(userId: number): Promise<Task[]> {
+  public async getTasks(id: number): Promise<Task[]> {
     const tasks = await this.prisma.task.findMany({
       where: {
-        userId: userId
+        userId: id
       }
     });
     return tasks;
   }
 
-  public async getTaskById(id: number): Promise<Task | null> {
+  public async getTaskById(id: number, user_id: number): Promise<Task | null> {
     const task = await this.prisma.task.findUnique({
-      where: { id },
+      where: { 
+        id, 
+        userId: user_id
+       },
     });
     return task;
   }
 
-  public async insertTask(task: CreateTaskDto): Promise<Task> {
+  public async insertTask(task: CreateTaskDto, userId: number): Promise<Task> {
     const newtask = await this.prisma.task.create({
-      data: task,});
+      data: { ...task, userId }
+    });
     return newtask;
   }
 
-public async updateTask(id: number, taskUpdated: UpdateTaskDto): Promise<Task>{
+public async updateTask(id: number, taskUpdated: UpdateTaskDto, user_id: number): Promise<Task>{
         // console.log(taskUpdated);
         const task = await this.prisma.task.update({
             where: {
-                id: id
+                id: id,
+                userId: user_id
             },
             data: taskUpdated
         });
         return task;
 }
 
-  public async deleteTask(id: number): Promise<boolean> {
+  public async deleteTask(id: number, user_id: number): Promise<boolean> {
     const task = await this.prisma.task.delete({
-      where: { id },
+      where: { id, userId: user_id },
     });
     return !!task;
   }
