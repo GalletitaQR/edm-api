@@ -52,7 +52,7 @@ export class UserController {
    
 
     //encripar contraseña.
-    const encryptedPassword = await this.utilsvc.hashPassword(user.password);
+    const encryptedPassword = await this.utilsvc.hash(user.password);
 
     user.password = encryptedPassword;
      return await this.userSvc.insertUser(user);

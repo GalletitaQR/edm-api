@@ -21,6 +21,7 @@ export class UserService {
                     lastname: true,
                     username: true,
                     password: false,
+                    hash: false,
                     create_at: true
                 },
                 where: {
@@ -41,6 +42,7 @@ export class UserService {
                     lastname: true,
                     username: true,
                     password: false,
+                    hash: false,
                     create_at: true
                 }
         });
@@ -56,6 +58,7 @@ export class UserService {
                     lastname: true,
                     username: true,
                     password: false,
+                    hash: false,
                     create_at: true
                 }
         });
@@ -71,6 +74,7 @@ export class UserService {
                     lastname: true,
                     username: true,
                     password: false,
+                    hash: false,
                     create_at: true
                 }
         });
@@ -89,6 +93,7 @@ export class UserService {
                     lastname: true,
                     username: true,
                     password: false,
+                    hash: false,
                     create_at: true
                 }
         });

@@ -6,8 +6,8 @@ import { JwtService } from "@nestjs/jwt";
 export class UtilService {
     constructor(private readonly jwtSvc: JwtService){}
 
-    public async hashPassword(password: string): Promise<string> {
-        return await bcrypt.hash(password, 10);
+    public async hash(text: string): Promise<string> {
+        return await bcrypt.hash(text, 10);
     }
 
     public async checkPassword(password: string, hashedPassword: string): Promise<boolean> {

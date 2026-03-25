@@ -17,7 +17,8 @@ model User {
   name String @db.VarChar(150)
   lastname String @db.VarChar(150)
   username String @db.VarChar(150) @unique
-  password String 
+  password String
+  hash String?
   create_at DateTime @default(now())
   tasks Task[]
 }
