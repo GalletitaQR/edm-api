@@ -5,6 +5,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AllExceptionFilter } from './common/filters/http-exeption.filter';
 
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(new ValidationPipe({
@@ -13,6 +14,11 @@ async function bootstrap() {
   }));
 
   app.useGlobalFilters(new AllExceptionFilter());
+  app.enableCors({
+    origin: 'http://localhost:5173',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true
+  });
 
   const config = new DocumentBuilder()
     .setTitle('API con vulnerabilidades de seguridad')

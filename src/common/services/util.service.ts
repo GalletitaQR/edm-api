@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import * as bcrypt from 'bcrypt';
-import { JwtService } from "@nestjs/jwt";
+import { JwtService, JwtVerifyOptions } from "@nestjs/jwt";
 
 @Injectable()
 export class UtilService {
@@ -19,7 +19,7 @@ export class UtilService {
         return token;
     }
 
-    public async getPayload(jwt: string): Promise<any>{
-        return await this.jwtSvc.verifyAsync(jwt, { secret: process.env.JWT_SECRET });
+    public async getPayload(jwt: string, options?: JwtVerifyOptions): Promise<any>{
+        return await this.jwtSvc.verifyAsync(jwt, { secret: process.env.JWT_SECRET, ...options });
     }
 }

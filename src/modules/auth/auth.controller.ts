@@ -4,6 +4,7 @@ import { ApiOperation } from '@nestjs/swagger';
 import { AuthDto } from './dto/auth/auth.dto';
 import { UtilService } from 'src/common/services/util.service';
 import { AuthGuard } from 'src/common/guards/auth.guard';
+import { RefreshGuard } from 'src/common/guards/refresh.guard';
 import { AppException } from 'src/common/exeptions/app.exeption';
 @Controller('api/auth')
 export class AuthController {
@@ -27,12 +28,12 @@ export class AuthController {
       const { password, ...payload } = user;
 
       //FIXME: Generar refresh token por 7d
-      const refresh = await this.utilSvc.generateJwt(payload, '7d');
+      const refresh = await this.utilSvc.generateJwt(payload, '5m');
       const hashRT = await this.utilSvc.hash(refresh);
       await this.authSvc.updateHash(user.id, hashRT);
 
       payload.hash = hashRT;
-      const jwt = await this.utilSvc.generateJwt(payload, '1h');
+      const jwt = await this.utilSvc.generateJwt(payload, '30s');
 
       return { access_token: jwt, refresh_token: hashRT };
 
@@ -52,17 +53,33 @@ export class AuthController {
 
   @Post("refresh")
   @HttpCode(HttpStatus.OK)
-  @UseGuards(AuthGuard)
+  @UseGuards(RefreshGuard)
   @ApiOperation({ summary: 'Recibe un "Refresh Token", valida que no haya expirado y entrega un nuevo  "Access Token "' })
   public async refreshToken(@Req() request: any) {
     //Tener el usuario en sesión
     const userSession = request['user'];
     const user = await this.authSvc.getUserById(userSession.id);
-    if(!user || !user.hash) throw new AppException('Acceso denegado', HttpStatus.FORBIDDEN, '0');
+    if(!user || !user.hash) throw new AppException('Acceso denegado no usuario en sesión', HttpStatus.FORBIDDEN, '0');
     //Comparar le token recibido con el hash guardado en la base de datos
-    if( userSession.hash != user.hash) throw new AppException('Acceso denegado', HttpStatus.FORBIDDEN, '0');
+    if( userSession.hash != user.hash) throw new AppException('Acceso denegado hashes no iguales', HttpStatus.FORBIDDEN, '0');
+    
+    
     //Si es válido, generar un nuevo JWT de acceso
-    return { token: '', refresh_token: '' };
+    const { password, ...payload } = user;
+
+    // El nuevo Refresh Token
+    const newRefreshToken = await this.utilSvc.generateJwt(payload, '5m');
+    const newHashRT = await this.utilSvc.hash(newRefreshToken);
+    await this.authSvc.updateHash(user.id, newHashRT);
+    // El nuevo Access Token
+    payload['hash'] = newHashRT;
+    const newAccessToken = await this.utilSvc.generateJwt(payload, '1m');
+
+
+    return { 
+        access_token: newAccessToken, 
+        refresh_token: newRefreshToken 
+    };
   }
 
   @Post("logout")
