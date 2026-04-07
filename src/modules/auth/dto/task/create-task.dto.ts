@@ -3,15 +3,16 @@
 import { IsBoolean, IsInt, IsNotEmpty, IsNumber, IsString, MaxLength, MinLength } from "class-validator";
 
 export class CreateTaskDto {
-  @IsString()
   @IsNotEmpty()
-  @MinLength(3)
+  @IsString({ message: 'Nombre debe ser una cadena' })
+  @MinLength(3, { message: 'Nombre debe tener al menos 3 caracteres' })
   @MaxLength(100)
   name: string;
 
   @IsString()
   @IsNotEmpty()
-  @MinLength(3)
+  @IsString({ message: 'Descripción debe ser una cadena' })
+  @MinLength(3, { message: 'Descripción debe tener al menos 3 caracteres' })
   @MaxLength(500)
   description: string;
 

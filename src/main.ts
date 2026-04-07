@@ -13,7 +13,6 @@ async function bootstrap() {
     whitelist: true,
   }));
 
-  app.useGlobalFilters(new AllExceptionFilter());
   app.enableCors({
     origin: 'http://localhost:5173',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',

@@ -1,27 +1,27 @@
 import { IsDate, IsInt, IsNotEmpty, IsNumber, IsString, MaxLength, MinLength } from "class-validator";
 
 export class CreateUserDto{
-      @IsString()
       @IsNotEmpty()
-      @MinLength(3)
+      @IsString({ message: 'Nombre debe ser una cadena' })
+      @MinLength(3, { message: 'Nombre debe tener al menos 3 caracteres' })
       @MaxLength(150)
       name: string;
     
       @IsString()
       @IsNotEmpty()
-      @MinLength(3)
-      @MaxLength(150)
+      @IsString({ message: 'Apellido debe ser una cadena' })
+      @MinLength(3, { message: 'Apellido debe tener al menos 3 caracteres' })
       lastname: string;
     
-      @IsString()
       @IsNotEmpty()
-      @MinLength(3)
+      @IsString({ message: 'Nombre de usuario debe ser una cadena' })
+      @MinLength(3, { message: 'Nombre de usuario debe tener al menos 3 caracteres' })
       @MaxLength(150)
       username: string;
     
-      @IsString()
       @IsNotEmpty()
-      @MinLength(3)
+      @IsString({ message: 'Contraseña debe ser una cadena' })
+      @MinLength(8, { message: 'Contraseña debe tener al menos 8 caracteres' })
       @MaxLength(25)
       password: string;
 }
