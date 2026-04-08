@@ -13,7 +13,6 @@ export class RefreshGuard implements CanActivate {
         if (!token) throw new UnauthorizedException();
 
         try {
-            // ✅ Ignorar expiración — solo necesitamos el payload
             const payload = await this.utilSvc.getPayload(token, { ignoreExpiration: true });
             request['user'] = payload;
         } catch {

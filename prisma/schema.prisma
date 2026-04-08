@@ -30,7 +30,7 @@ model Task {
   description String
   priority    Boolean
   userId      Int
-  user        User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user        User    @relation(fields: [userId], references: [id])
 }
 
 
@@ -42,5 +42,5 @@ model Logs {
   error       String   @db.Text
   errorCode   String   @db.Text
   session_id  Int?
-  user        User?    @relation(fields: [session_id], references: [id], onDelete: SetNull) // ✅ SetNull porque es opcional
+  user        User?    @relation(fields: [session_id], references: [id])
 }

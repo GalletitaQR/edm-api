@@ -46,8 +46,8 @@ export class AuthController {
   @Get("me")
   @UseGuards(AuthGuard)
   public async getProfile(@Req() request: any){
-    const userId = request['user'];
-    return userId;
+    const userId = request['user'].id;
+    return this.authSvc.getUserById(userId);
   }
 
 

@@ -19,10 +19,4 @@ export class UpdateUserDto {
     @MinLength(3, { message: 'Debe tener al menos 3 caracteres' })
     @MaxLength(150)
     username?: string;
-
-    @IsOptional()
-    @IsString({ message: 'Debe ser una cadena' })
-    @MinLength(8, { message: 'Debe tener al menos 8 caracteres' })
-    @MaxLength(25)
-    password?: string;
 }
