@@ -42,7 +42,7 @@ export class UserController {
   public async getUserById(@Param('id', ParseIntPipe) id: number): Promise<User> {
     const user = await this.userSvc.getUserById(id);
     if (user) return user;
-    else throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    else throw new HttpException('Usuario no encontrado', HttpStatus.NOT_FOUND);
   }
 
   /** POST http://localhost:3000/api/user */
@@ -77,7 +77,7 @@ export class UserController {
       return await this.userSvc.deleteUser(id);
     } catch (error) {
       throw new HttpException(
-        'No se puede eliminar el usuario',
+        'No se puede eliminar el usuario, intenta eliminando sus tareas primero',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }

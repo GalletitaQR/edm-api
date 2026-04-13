@@ -6,14 +6,14 @@ export class CreateTaskDto {
   @IsNotEmpty()
   @IsString({ message: 'Nombre debe ser una cadena' })
   @MinLength(3, { message: 'Nombre debe tener al menos 3 caracteres' })
-  @MaxLength(100)
+  @MaxLength(20)
   name: string;
 
   @IsString()
   @IsNotEmpty()
   @IsString({ message: 'Descripción debe ser una cadena' })
   @MinLength(3, { message: 'Descripción debe tener al menos 3 caracteres' })
-  @MaxLength(500)
+  @MaxLength(250)
   description: string;
 
   @IsBoolean()

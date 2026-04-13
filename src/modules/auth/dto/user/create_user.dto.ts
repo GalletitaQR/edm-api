@@ -4,19 +4,20 @@ export class CreateUserDto{
       @IsNotEmpty()
       @IsString({ message: 'Nombre debe ser una cadena' })
       @MinLength(3, { message: 'Nombre debe tener al menos 3 caracteres' })
-      @MaxLength(150)
+      @MaxLength(20)
       name: string;
     
       @IsString()
       @IsNotEmpty()
       @IsString({ message: 'Apellido debe ser una cadena' })
       @MinLength(3, { message: 'Apellido debe tener al menos 3 caracteres' })
+      @MaxLength(25)
       lastname: string;
     
       @IsNotEmpty()
       @IsString({ message: 'Nombre de usuario debe ser una cadena' })
       @MinLength(3, { message: 'Nombre de usuario debe tener al menos 3 caracteres' })
-      @MaxLength(150)
+      @MaxLength(20)
       username: string;
     
       @IsNotEmpty()

@@ -5,7 +5,7 @@ export class UpdateTaskDto {
     @IsOptional()
     @IsString({ message: 'Debe ser una cadena' })
     @MinLength(3, { message: 'Debe tener al menos 3 caracteres' })
-    @MaxLength(100)
+    @MaxLength(20)
     name?: string;
 
     @IsOptional()
